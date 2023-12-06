@@ -1,0 +1,20 @@
+image: maven:latest  # Choose an image matching your project needs
+pipelines:
+  default:
+    - step:
+        name: Build and analyze
+        caches:
+          - sonar
+          - maven
+        script:
+          # Checkout the code
+          - git clone $BITBUCKET_CLONE_URL && cd $(basename $_)
+          - git checkout $BITBUCKET_BRANCH
+
+          # Build and analyze
+          - mvn -B -X verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gftmarcel_poc-vuln-java
+
+definitions:
+  caches:
+    sonar: ~/.sonar/cache
+    # maven: ~/.m2 
